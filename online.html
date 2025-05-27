@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ILC Youth Group Trivia Night</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+html, body {
+margin: 0;
+padding: 0;
+height: 100%;
+font-family: 'Poppins', sans-serif;
+background: black;
+overflow: hidden;
+}
+
+#container {
+display: flex;
+flex-direction: row;
+height: 100vh;
+width: 100vw;
+}
+
+#video-container, #webpage-container {
+flex: 1;
+position: relative;
+filter: blur(10px);
+transition: filter 1s ease;
+height: 100vh;
+box-sizing: border-box;
+}
+
+#player {
+width: 100%;
+height: 100%;
+pointer-events: none;
+}
+
+iframe {
+width: 100%;
+height: 100%;
+border: none;
+display: block;
+}
+
+#paywall {
+position: absolute;
+top: 0; left: 0;
+width: 100vw;
+height: 100vh;
+background: rgba(0, 0, 0, 0.7);
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+z-index: 10;
+color: white;
+text-align: center;
+padding: 5vw;
+box-sizing: border-box;
+transition: opacity 1s ease;
+overflow-y: auto;
+}
+
+#paywall.fade-out {
+opacity: 0;
+pointer-events: none;
+}
+
+#paywall h1 {
+font-size: 2.5rem;
+font-weight: 900;
+margin: 0.5em 0;
+}
+
+#paywall p {
+font-size: 1.25rem;
+max-width: 600px;
+margin: 0.5em 0;
+}
+
+.highlight-price {
+color: #39ff14;
+font-weight: 900;
+animation: popRotate 1.5s infinite ease-in-out;
+display: inline-block;
+}
+
+@keyframes popRotate {
+0%, 100% { transform: scale(1) rotate(0deg); }
+50% { transform: scale(1.3) rotate(5deg); }
+}
+
+#paypal-button-container {
+margin-top: 20px;
+}
+
+p.refund-note {
+font-size: 0.75rem;
+color: #888888;
+margin-top: 8px;
+}
+
+.dont-reload {
+font-size: 1rem;
+margin-top: 10px;
+color: white;
+}
+
+.dont-reload .pastel-red {
+color: #ff7f7f;
+font-weight: 700;
+}
+
+@media (max-width: 768px) {
+#container {
+flex-direction: column;
+}
+
+#video-container, #webpage-container {
+width: 100%;
+height: 50vh;
+}
+
+#paywall h1 { font-size: 2rem; }
+#paywall p { font-size: 1rem; }
+p.refund-note { font-size: 0.6rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="container">
+<div id="video-container">
+<div id="player"></div>
+</div>
+<div id="webpage-container">
+<iframe src="https://www.crowd.live/CGBP2"></iframe>
+</div>
+</div>
+
+<div id="paywall">
+<h1>
+Welcome to the <span style="color:#00d4ff;">ILC Youth Group</span><br>Trivia Night!
+</h1>
+<p>All you need to do is pay, the live stream and game will be on the same page.</p>
+<p>Pay <span class="highlight-price">$20</span> to access the live stream & game!</p>
+<p class="dont-reload"><span class="pastel-red">Do NOT</span> reload the page after purchase as it could lead to potential data loss. You may reload once the game is finished.</p>
+<div id="paypal-button-container"></div>
+<p class="refund-note">No refunds after purchase.</p>
+</div>
+
+<script>
+let player;
+const paid = localStorage.getItem('ilcPaid') === 'true';
+
+function unlockContent() {
+  document.getElementById("paywall").classList.add("fade-out");
+  document.getElementById("video-container").style.filter = "blur(0)";
+  document.getElementById("webpage-container").style.filter = "blur(0)";
+  if (player && typeof player.unMute === "function") {
+    player.unMute();
+    player.playVideo();
+  }
+}
+
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('player', {
+    videoId: 'WRoBqYq5aHE',
+    playerVars: {
+      autoplay: 1,
+      mute: 1,  // always start muted to allow autoplay
+      controls: 1,
+      modestbranding: 1,
+      rel: 0,
+      fs: 0,
+      playsinline: 1,
+      enablejsapi: 1,
+      origin: window.location.origin
+    },
+    events: {
+      onReady: (e) => {
+        e.target.mute();  // mute first to ensure autoplay works
+        e.target.playVideo();
+        if (paid) {
+          setTimeout(() => {
+            e.target.unMute();
+            unlockContent();
+          }, 500);
+        }
+      },
+      onStateChange: (e) => {
+        if (!paid && e.data === YT.PlayerState.PAUSED) {
+          e.target.playVideo();
+        }
+      }
+    }
+  });
+
+  function disableClicksOnPC() {
+    if(window.innerWidth > 768) {
+      document.getElementById('player').style.pointerEvents = 'none';
+    } else {
+      document.getElementById('player').style.pointerEvents = 'auto';
+    }
+  }
+
+  disableClicksOnPC();
+  window.addEventListener('resize', disableClicksOnPC);
+}
+
+function loadYTAPI() {
+  const tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.body.appendChild(tag);
+}
+
+window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+loadYTAPI();
+</script>
+
+<!-- PayPal SDK -->
+<script src="https://www.paypal.com/sdk/js?client-id=AZbhBXM-dYRgWS4_HF5fSuyubMr8w9eb3PH2W7kbU3iRrrpRt1tzwwDA8d98X-AC0V7RVtlLvmBcxt-k&currency=USD"></script>
+<script>
+paypal.Buttons({
+  createOrder: (data, actions) => {
+    return actions.order.create({
+      purchase_units: [{ amount: { value: '20.00' } }],
+      application_context: {
+        shipping_preference: "NO_SHIPPING"
+      }
+    });
+  },
+  onApprove: (data, actions) => {
+    return actions.order.capture().then(() => {
+      localStorage.setItem('ilcPaid', 'true');
+      unlockContent();
+    });
+  }
+}).render('#paypal-button-container');
+</script>
+
+</body>
+</html>

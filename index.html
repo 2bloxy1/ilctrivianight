@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ILC Youth Group Trivia Night</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+    }
+
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .background video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.05);
+      filter: blur(5px) brightness(0.6);
+      pointer-events: none;
+    }
+
+    .mobile-bg {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://i.postimg.cc/hGy3QZm3/o.jpg') center center / cover no-repeat;
+      transform: scale(1.5);
+      filter: blur(2px) brightness(0.6);
+      z-index: -1;
+    }
+
+    @media (max-width: 768px) {
+      .background video {
+        display: none;
+      }
+
+      .mobile-bg {
+        display: block;
+      }
+    }
+
+    .overlay {
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: #f0f0f0;
+      z-index: 1;
+      padding: 20px;
+      animation: fadeInLeft 1.2s ease-out forwards;
+    }
+
+    .logo {
+      width: 350px;
+      margin-bottom: 10px;
+    }
+
+    .separator {
+      width: 60%;
+      max-width: 400px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.4);
+      border: none;
+      margin: 20px 0 30px;
+      border-radius: 2px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin-bottom: 30px;
+      opacity: 0;
+      animation: fadeInLeft 1s ease forwards;
+      animation-delay: 0.3s;
+    }
+
+    h1 .highlight {
+      color: #4aa0cc;
+      font-weight: 800;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      align-items: center;
+      opacity: 0;
+      animation: fadeInLeft 1s ease forwards;
+      animation-delay: 0.6s;
+    }
+
+    .buttons a {
+      background-color: white;
+      color: black;
+      text-decoration: none;
+      padding: 15px 30px;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s, color 0.3s;
+    }
+
+    .buttons a:hover {
+      background-color: #246396;
+      color: white;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .socials {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+      z-index: 2;
+    }
+
+    .socials a {
+      color: white;
+      font-size: 1.5rem;
+      transition: color 0.3s, transform 0.2s;
+    }
+
+    .socials a:hover {
+      color: #4aa0cc;
+      transform: scale(1.1);
+    }
+
+    @keyframes fadeInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="background">
+    <video autoplay muted loop playsinline>
+      <source src="https://www.dropbox.com/scl/fi/z1w5fhg7m2mr327qpjn3i/True-North-VBS_-Trusting-Jesus-in-a-Wild-World.mp4?rlkey=wdgwwjvgxmqjiqiulhvugk7un&raw=1" type="video/mp4" />
+    </video>
+  </div>
+
+  <div class="mobile-bg"></div>
+
+  <div class="overlay">
+    <img src="https://i.postimg.cc/J7bG1fZx/ILC-Logo-Google-Sites.png" alt="ILC Logo" class="logo" />
+    <hr class="separator" />
+    <h1>Welcome to the <span class="highlight">ILC Youth Group</span> Trivia Night</h1>
+    <div class="buttons">
+      <a href="online.html">Join Us Online</a>
+      <a href="inperson.html">Register In-Person</a>
+    </div>
+  </div>
+
+  <div class="socials">
+    <a href="https://www.immanuellutheranchurch.com" target="_blank" aria-label="Website"><i class="fas fa-globe"></i></a>
+    <a href="http://www.youtube.com/@immanuelfiveforks" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="http://www.facebook.com/immanuellutheranchurchsc/" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+    <a href="http://x.com/immanuelluthsc" target="_blank" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+    <a href="http://www.instagram.com/immanuellutheranchurchsc/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+  </div>
+
+</body>
+</html>

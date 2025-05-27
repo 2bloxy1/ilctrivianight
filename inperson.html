@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ILC Youth Group Trivia Night</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* Your existing styles here */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: black;
+      overflow: hidden;
+    }
+    iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      border: none;
+    }
+    .help-button {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 1.8rem;
+      cursor: pointer;
+      z-index: 10;
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(6px);
+      transition: transform 0.2s ease, background 0.3s ease;
+      animation: fadeInUp 0.6s ease forwards;
+      opacity: 0;
+    }
+    .help-button:hover {
+      transform: scale(1.05);
+      background: rgba(255, 255, 255, 0.08);
+    }
+    @keyframes fadeInUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.95);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      color: white;
+      padding: 2rem;
+      box-sizing: border-box;
+      animation: fadeIn 0.4s ease;
+      flex-direction: column;
+      text-align: center;
+    }
+    .overlay.hidden {
+      display: none;
+    }
+    .overlay h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: white;
+      font-size: 1rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 2px 8px rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(4px);
+      appearance: none;
+    }
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: scale(1.03);
+    }
+    .btn.cancel {
+      background: rgba(255, 0, 0, 0.02);
+      color: #ffcccc;
+      border: 1px solid rgba(255, 0, 0, 0.05);
+    }
+    .btn.cancel:hover {
+      background: rgba(255, 0, 0, 0.1);
+    }
+    .btn.send-order {
+      background: rgba(179, 255, 188, 0.06);
+      color: #b3ffbc;
+      border: 1px solid rgba(179, 255, 188, 0.15);
+    }
+    .btn.send-order:hover {
+      background: rgba(0, 255, 0, 0.1);
+    }
+    .confirmation {
+      font-size: 1.4rem;
+      color: #d4d4d4;
+      animation: fadeIn 0.5s ease;
+      margin-bottom: 1rem;
+    }
+    .fade {
+      animation: fadeIn 0.4s ease forwards;
+    }
+    .fade-out {
+      animation: fadeOut 0.3s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(10px); }
+    }
+    label {
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+      display: block;
+    }
+    .checkbox-group {
+      text-align: left;
+      margin-bottom: 1.5rem;
+    }
+    .checkbox-group label {
+      display: block;
+      padding: 0.25rem;
+      font-weight: 400;
+    }
+    input[type="checkbox"] {
+      margin-right: 0.5rem;
+    }
+    textarea, input, button, select {
+      font-size: 16px; /* Prevent mobile zoom */
+    }
+    textarea {
+      width: 100%;
+      padding: 0.5rem;
+      background: rgba(255, 255, 255, 0.02);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      resize: vertical;
+    }
+    @media (max-width: 600px) {
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <iframe src="https://www.crowd.live"></iframe>
+
+  <div class="help-button" onclick="openOverlay()">!</div>
+
+  <div id="help-overlay" class="overlay hidden">
+    <div id="step-1">
+      <h1>Select Your Table</h1>
+      <div class="button-group" id="table-buttons"></div>
+      <button class="btn cancel" onclick="closeOverlay()">Cancel</button>
+    </div>
+
+    <div id="step-2" style="display:none;">
+      <h1>What Do You Need?</h1>
+      <div class="button-group">
+        <button class="btn" onclick="sendRequest('technical')">Technical Assistance</button>
+        <button class="btn" onclick="showRefreshmentOptions()">More Drinks/Snacks</button>
+      </div>
+    </div>
+
+    <div id="step-3" style="display:none;">
+      <h1>Select Your Items</h1>
+      <div class="checkbox-group">
+        <label>Snacks:</label>
+        <label><input type="checkbox" value="Chips" class="snack">Chips</label>
+        <label><input type="checkbox" value="Doritos" class="snack">Doritos</label>
+      </div>
+      <div class="checkbox-group">
+        <label>Drinks:</label>
+        <label><input type="checkbox" value="Water" class="drink">Water</label>
+        <label><input type="checkbox" value="Lemonade" class="drink">Lemonade</label>
+        <label><input type="checkbox" value="Coke" class="drink">Coke</label>
+      </div>
+      <textarea id="comments" placeholder="Comments or special requests..."></textarea>
+      <button class="btn send-order" onclick="sendRequest('refreshments')">Send Order</button>
+    </div>
+
+    <div id="confirmation" style="display:none;">
+      <div class="confirmation">Request sent for Table <span id="table-num"></span>.</div>
+      <button class="btn" onclick="closeOverlay()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    let selectedTable = null;
+
+    function openOverlay() {
+      const overlay = document.getElementById('help-overlay');
+      overlay.classList.remove('hidden');
+      overlay.classList.add('fade');
+      document.getElementById('step-1').style.display = 'block';
+      document.getElementById('step-2').style.display = 'none';
+      document.getElementById('step-3').style.display = 'none';
+      document.getElementById('confirmation').style.display = '
