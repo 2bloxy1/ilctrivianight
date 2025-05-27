@@ -6,7 +6,6 @@
   <title>ILC Youth Group Trivia Night</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
-    /* Your existing styles here */
     html, body {
       margin: 0;
       padding: 0;
@@ -15,6 +14,7 @@
       background: black;
       overflow: hidden;
     }
+
     iframe {
       position: absolute;
       top: 0; left: 0;
@@ -22,6 +22,7 @@
       height: 100vh;
       border: none;
     }
+
     .help-button {
       position: fixed;
       bottom: 24px;
@@ -44,14 +45,17 @@
       animation: fadeInUp 0.6s ease forwards;
       opacity: 0;
     }
+
     .help-button:hover {
       transform: scale(1.05);
       background: rgba(255, 255, 255, 0.08);
     }
+
     @keyframes fadeInUp {
       from { transform: translateY(20px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
+
     .overlay {
       position: fixed;
       top: 0; left: 0;
@@ -69,14 +73,17 @@
       flex-direction: column;
       text-align: center;
     }
+
     .overlay.hidden {
       display: none;
     }
+
     .overlay h1 {
       font-size: 1.8rem;
       font-weight: 600;
       margin-bottom: 1.5rem;
     }
+
     .button-group {
       display: flex;
       flex-wrap: wrap;
@@ -84,6 +91,7 @@
       gap: 1rem;
       margin-bottom: 2rem;
     }
+
     .btn {
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -97,66 +105,82 @@
       backdrop-filter: blur(4px);
       appearance: none;
     }
+
     .btn:hover {
       background: rgba(255, 255, 255, 0.08);
       transform: scale(1.03);
     }
+
     .btn.cancel {
       background: rgba(255, 0, 0, 0.02);
       color: #ffcccc;
       border: 1px solid rgba(255, 0, 0, 0.05);
     }
+
     .btn.cancel:hover {
       background: rgba(255, 0, 0, 0.1);
     }
+
     .btn.send-order {
       background: rgba(179, 255, 188, 0.06);
       color: #b3ffbc;
       border: 1px solid rgba(179, 255, 188, 0.15);
     }
+
     .btn.send-order:hover {
       background: rgba(0, 255, 0, 0.1);
     }
+
     .confirmation {
       font-size: 1.4rem;
       color: #d4d4d4;
       animation: fadeIn 0.5s ease;
       margin-bottom: 1rem;
     }
+
     .fade {
       animation: fadeIn 0.4s ease forwards;
     }
+
     .fade-out {
       animation: fadeOut 0.3s ease forwards;
     }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
     @keyframes fadeOut {
       from { opacity: 1; transform: translateY(0); }
       to { opacity: 0; transform: translateY(10px); }
     }
+
     label {
       font-size: 1rem;
       margin-bottom: 0.25rem;
       display: block;
     }
+
     .checkbox-group {
       text-align: left;
       margin-bottom: 1.5rem;
     }
+
     .checkbox-group label {
       display: block;
       padding: 0.25rem;
       font-weight: 400;
     }
+
     input[type="checkbox"] {
       margin-right: 0.5rem;
     }
+
     textarea, input, button, select {
       font-size: 16px; /* Prevent mobile zoom */
     }
+
     textarea {
       width: 100%;
       padding: 0.5rem;
@@ -167,11 +191,13 @@
       margin-bottom: 1rem;
       resize: vertical;
     }
+
     @media (max-width: 600px) {
       .btn {
         width: 100%;
       }
     }
+
   </style>
 </head>
 <body>
@@ -227,4 +253,104 @@
       document.getElementById('step-1').style.display = 'block';
       document.getElementById('step-2').style.display = 'none';
       document.getElementById('step-3').style.display = 'none';
-      document.getElementById('confirmation').style.display = '
+      document.getElementById('confirmation').style.display = 'none';
+    }
+
+    function selectTable(num) {
+      selectedTable = num;
+      const step1 = document.getElementById('step-1');
+      const step2 = document.getElementById('step-2');
+      step1.classList.add('fade-out');
+      setTimeout(() => {
+        step1.style.display = 'none';
+        step1.classList.remove('fade-out');
+        step2.style.display = 'block';
+        step2.classList.add('fade');
+      }, 300);
+    }
+
+    function showRefreshmentOptions() {
+      const step2 = document.getElementById('step-2');
+      const step3 = document.getElementById('step-3');
+      step2.classList.add('fade-out');
+      setTimeout(() => {
+        step2.style.display = 'none';
+        step2.classList.remove('fade-out');
+        step3.style.display = 'block';
+        step3.classList.add('fade');
+      }, 300);
+    }
+
+    function sendRequest(type) {
+      const payload = { table: selectedTable, type: type };
+
+      if (type === 'refreshments') {
+        const snackChecks = document.querySelectorAll('.snack:checked');
+        const drinkChecks = document.querySelectorAll('.drink:checked');
+        const snacks = Array.from(snackChecks).map(cb => cb.value);
+        const drinks = Array.from(drinkChecks).map(cb => cb.value);
+        const comments = document.getElementById('comments').value.trim();
+
+        if (snacks.length === 0 && drinks.length === 0) {
+          alert("Please select at least one food or drink item.");
+          return;
+        }
+
+        payload.snacks = snacks;
+        payload.drinks = drinks;
+        payload.comments = comments;
+      }
+
+      fetch('/request-assistance', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      });
+
+      const step2 = document.getElementById('step-2');
+      const step3 = document.getElementById('step-3');
+      const confirmation = document.getElementById('confirmation');
+      const fromStep = type === 'refreshments' ? step3 : step2;
+      fromStep.classList.add('fade-out');
+      setTimeout(() => {
+        fromStep.style.display = 'none';
+        fromStep.classList.remove('fade-out');
+        confirmation.style.display = 'block';
+        confirmation.classList.add('fade');
+        document.getElementById('table-num').innerText = selectedTable;
+        setTimeout(() => closeOverlay(), 3000);
+      }, 300);
+    }
+
+    function closeOverlay() {
+      const overlay = document.getElementById('help-overlay');
+      overlay.classList.remove('fade');
+      overlay.classList.add('fade-out');
+      setTimeout(() => {
+        overlay.classList.remove('fade-out');
+        overlay.classList.add('hidden');
+        resetForm();
+      }, 300);
+    }
+
+    function resetForm() {
+      selectedTable = null;
+      document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+      document.getElementById('comments').value = '';
+      document.getElementById('step-1').style.display = 'block';
+      document.getElementById('step-2').style.display = 'none';
+      document.getElementById('step-3').style.display = 'none';
+      document.getElementById('confirmation').style.display = 'none';
+    }
+
+    const tableContainer = document.getElementById('table-buttons');
+    for (let i = 1; i <= 6; i++) {
+      const button = document.createElement('button');
+      button.className = 'btn';
+      button.textContent = `Table ${i}`;
+      button.onclick = () => selectTable(i);
+      tableContainer.appendChild(button);
+    }
+  </script>
+</body>
+</html>
